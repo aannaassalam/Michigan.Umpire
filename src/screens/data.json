@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "Which is first Indian cricket tournament ?",
+      "options": [
+        "Pepsi Cup",
+        "Bombay Triangular",
+        "Bombay Series",
+        "None of these"
+      ]
+    },
+    {
+      "question": "Which of the following is first cricket club in India ?",
+      "options": [
+        "Oriental Cricket Club",
+        "Maharashtra Cricket Club",
+        "Bombay Cricket Club",
+        "East Indian Cricket Club"
+      ]
+    },
+    {
+      "question": "Indian played first test match against ________ .",
+      "options": ["Pakistan", "England", "Australia", "South Africa"]
+    },
+    {
+      "question": "Indian played their First ODI Match against _______.",
+      "options": ["South Africa", "Pakistan", "Australia", "England"]
+    },
+    {
+      "question": "Indian played their First T20 Match against _______.",
+      "options": ["Australia", "Pakistan", "England", "South Africa"]
+    }
+  ]
+}

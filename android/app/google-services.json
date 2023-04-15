@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "908252631576",
+    "project_id": "fccumpire-admin",
+    "storage_bucket": "fccumpire-admin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908252631576:android:5def5c615f49bbaedaa96d",
+        "android_client_info": {
+          "package_name": "com.fccumpire"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "908252631576-hjevvj0rv7vo95tjr0io05c0kq1an1fg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhfdNQQqMgDsCuUrnFv3tNhAWm8uTzM5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "908252631576-hjevvj0rv7vo95tjr0io05c0kq1an1fg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
