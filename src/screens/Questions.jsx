@@ -22,10 +22,11 @@ import {
 // import {questions} from './data.json';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
-import {GetIcons} from '../hooks/getIcons';
+// import {GetIcons} from '../hooks/getIcons';
 import {QuesContext} from '../context/questionContext';
 import firestore, {firebase} from '@react-native-firebase/firestore';
 import QuestionCards from '../components/questionCards';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Questions({navigation}) {
   const [answer, setAnswer] = useState();
@@ -50,21 +51,14 @@ export default function Questions({navigation}) {
   const Dimen = Dimensions.get('window').width - 12.3;
 
   useEffect(() => {
-    // console.log(questionIndex);
     if (questionIndex < local_questions_copy.length) {
-      console.log(questionIndex);
-      // Animated.timing(question, {
-      //   toValue: -Dimen * questionIndex,
-      //   duration: 500,
-      //   useNativeDriver: true,
-      // }).start();
       flatlist.current.scrollToIndex({index: questionIndex, animated: true});
     }
   }, [questionIndex]);
 
   const animateOptions = () => {
     Animated.timing(options, {
-      toValue: Dimensions.get('window').width * 0.8,
+      toValue: Dimensions.get('window').width * 0.61,
       duration: 450,
       useNativeDriver: true,
     }).start(() => {
@@ -186,12 +180,12 @@ export default function Questions({navigation}) {
     }
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <ImageBackground
         source={require('../../assets/abstract.jpg')}
         resizeMode="cover"
         style={styles.backgroundImage}
-      />
+        />
       <View
         style={{
           position: 'absolute',
@@ -201,7 +195,7 @@ export default function Questions({navigation}) {
           height: Dimensions.get('window').height,
           backgroundColor: 'rgba(0,0,0,0.1)',
         }}
-      />
+        />
       <View style={styles.question_counter}>
         <Text style={styles.counter}>
           Question {questionIndex + 1}/{local_questions_copy.length}
@@ -293,7 +287,7 @@ export default function Questions({navigation}) {
           </LinearGradient>
         </Pressable>
       </Animated.ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -12,11 +12,13 @@ import {
   ScrollView,
   ActivityIndicator,
   useWindowDimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
 import {QuesContext} from '../context/questionContext';
 import firestore from '@react-native-firebase/firestore';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 export default function Login({navigation}) {
   const [inputFocus, setInputFocus] = useState();
@@ -80,7 +82,9 @@ export default function Login({navigation}) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
+        <View style={styles.container}>
       <ImageBackground
         source={require('../../assets/abstract.jpg')}
         resizeMode="cover"
@@ -204,7 +208,7 @@ export default function Login({navigation}) {
             onBlur={() => setInputFocus()}
             value={email}
             onChangeText={text => {
-              setEmail(text);
+              setEmail(text.toLowerCase());
               setErr({input: '', msg: ''});
             }}
           />
@@ -243,7 +247,9 @@ export default function Login({navigation}) {
         </LinearGradient>
       </Pressable>
       {/* </View> */}
-    </ScrollView>
+      </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 }
 

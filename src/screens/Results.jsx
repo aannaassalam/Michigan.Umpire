@@ -29,16 +29,6 @@ export default function Results({route, navigation}) {
   const top = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
-  const rightInterpolate = wicket.interpolate({
-    inputRange: [-97, 0],
-    outputRange: ['-25%', '0%'],
-  });
-
-  const topInterpolate = top.interpolate({
-    inputRange: [0, 130],
-    outputRange: ['0%', '16%'],
-  });
-
   useEffect(() => {
     checkUser(JSON.parse(storage.getString('user')).email);
     setTimeout(() => {
@@ -67,8 +57,17 @@ export default function Results({route, navigation}) {
       delay: 1000,
       useNativeDriver: false,
     }).start();
-    // checkUser(JSON.parse(storage.getString('user')).email || '');
   }, []);
+
+  const rightInterpolate = wicket.interpolate({
+    inputRange: [-97, 0],
+    outputRange: ['-25%', '0%'],
+  });
+
+  const topInterpolate = top.interpolate({
+    inputRange: [0, 130],
+    outputRange: ['0%', '16%'],
+  });
 
   return (
     <View style={styles.container}>
@@ -77,22 +76,10 @@ export default function Results({route, navigation}) {
         resizeMode="cover"
         style={styles.backgroundImage}
       />
-      {/* <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: Dimensions.get('window').width,
-          height: Dimensions.get('window').height,
-          backgroundColor: 'rgba(0,0,0,0)',
-        }}
-      /> */}
       {initialLoading ? (
         <Lottie
           source={require('../../assets/wicket.json')}
           autoPlay
-          // loop={false}
-          // autoSize
           resizeMode="cover"
           style={styles.umpire}
         />
@@ -106,7 +93,6 @@ export default function Results({route, navigation}) {
               resizeMode: 'contain',
               position: 'absolute',
               zIndex: 99,
-              // right: -97,
             },
             {
               right: rightInterpolate,
@@ -117,27 +103,13 @@ export default function Results({route, navigation}) {
         />
       )}
       <Animated.View style={[styles.result_container, {opacity: opacity}]}>
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderBottomColor: '#aaa',
-            borderBottomWidth: 2,
-            borderStyle: 'dashed',
-            paddingBottom: 30,
-          }}> */}
-        {/* <Image
-          source={require('../../assets/umpire.png')}
-          style={styles.umpire}
-        /> */}
-
         <View style={{width: '100%', alignItems: 'center', marginTop: 200}}>
           <Text
             style={{
               ...styles.text,
               color: authLoading
                 ? '#ccc'
-                : user.attempts[user.attempts.length - 1].result_state === 0
+                : user.attempts && user.attempts[user.attempts?.length - 1]?.result_state === 0
                 ? '#F47174'
                 : '#50C878',
               fontSize: 24 / fontScale,
@@ -146,26 +118,21 @@ export default function Results({route, navigation}) {
             }}>
             {authLoading
               ? 'Loading Result...'
-              : user.attempts[user.attempts.length - 1].result_state === 0
+              : user.attempts && user.attempts[user.attempts?.length - 1]?.result_state === 0
               ? 'Assignment Failed'
               : 'Assignment Passed'}
           </Text>
           <Text style={{...styles.text}}>
             {authLoading
               ? ''
-              : user.attempts[user.attempts.length - 1].result_state === 0
+              : user.attempts && user.attempts[user.attempts?.length - 1].result_state === 0
               ? 'Better Luck next time...'
               : 'Boom Boom Boom...'}
           </Text>
         </View>
-        {/* </View> */}
         <View
           style={{
-            // flex: 1,
             marginTop: 15,
-            // borderWidth: 1,
-            // borderColor: '#aaa',
-            // borderRadius: 28,
             padding: 5,
             paddingHorizontal: 10,
           }}>
@@ -179,27 +146,10 @@ export default function Results({route, navigation}) {
             }}>
             {authLoading
               ? ''
-              : user.attempts[user.attempts.length - 1].result_state === 0
+              : user.attempts && user.attempts[user.attempts?.length - 1].result_state === 0
               ? "Results are out, as you have not been able to clear the assignment your certificate has been put to hold. You will still recieve a result over your email, don't forget to check that out and come again stronger"
               : "Congratulations🎉, You have successfully cleared your assignment, and the certificate has been sent to you over mail, don't forget to check. Remember you can come again anytime and take the assignment."}
           </Text>
-          {/* <Text
-            style={{
-              fontSize: 18 / fontScale,
-              fontWeight: '500',
-              color: '#444',
-              marginBottom: 5,
-            }}>
-            a copy of certificate will sent to you over email.
-          </Text>
-          <Text
-            style={{
-              fontSize: 18 / fontScale,
-              fontWeight: '500',
-              color: '#444',
-            }}>
-            or else your result will be sent over mail.
-          </Text> */}
         </View>
       </Animated.View>
     </View>

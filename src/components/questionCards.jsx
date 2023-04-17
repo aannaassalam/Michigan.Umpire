@@ -17,7 +17,7 @@ import Feather from 'react-native-vector-icons/Feather';
 export default function QuestionCards({question}) {
   const [showImage, setShowImage] = useState(false);
   const [startAnim, setStartAnim] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const card = useRef(new Animated.Value(0)).current;
   const {fontScale} = useWindowDimensions();
@@ -69,7 +69,6 @@ export default function QuestionCards({question}) {
               transform: [{rotateY: '180deg'}],
               alignSelf: 'flex-end',
               // padding: 5,
-              // backgroundColor: 'blue',
             }}
             onPress={() =>
               //   setTimeout(() => {
@@ -97,10 +96,12 @@ export default function QuestionCards({question}) {
               height: '93%',
               resizeMode: 'contain',
               marginTop: 'auto',
-              display: imageLoading ? 'none' : 'flex',
-              // backgroundColor: 'red',
+              display: imageLoading?"none":'flex',
             }}
-            onLoadEnd={() => setImageLoading(false)}
+            // onLoadEnd={e=>}
+            onLoadStart={e=>setImageLoading(true)}
+            onLoadEnd={(e) => 
+              setImageLoading(false)}
           />
           {imageLoading && (
             <ActivityIndicator

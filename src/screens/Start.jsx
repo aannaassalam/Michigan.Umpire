@@ -136,8 +136,8 @@ const makeStyles = fontScale =>
       marginBottom: 25,
     },
     name: {
-      fontSize: 40 / fontScale,
-      fontFamily: 'NatureBeauty',
+      fontSize: 48 / fontScale,
+      fontFamily: 'Redressed-Regular',
       color: '#fafafa',
       textAlign: 'center',
       // color: '#333',
