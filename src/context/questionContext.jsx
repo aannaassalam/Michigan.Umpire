@@ -21,7 +21,7 @@ export default function QuestionContext({children}) {
         const randomQues = [];
         snap.docs.forEach(doc => randomQues.push({...doc.data(), id: doc.id}));
         setPassingMarks(parseInt(14 * (14 / randomQues.length)));
-        setQuestions(randomQues.sort(() => Math.random() - 0.5).splice(0, 25));
+        setQuestions(randomQues.sort(() => Math.random() - 0.5).filter(ques => ques.activityStatus).splice(0, 25));
       })
       .finally(() => setLoading(false));
   };
