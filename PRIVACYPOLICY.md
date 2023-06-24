@@ -20,7 +20,6 @@ The list of information required by the app to continue using the app is listed 
 | First Name | This is required to generate a certifcate unique to the user where his first name will be mentioned. |
 | Last Name | This is required to generate a certifcate unique to the user where his last name will be mentioned. |
 | Email Address | This is required to check and allow access to user previous data and also to send them their generated certificate over to the mail. |
-| `android.permission.VIBRATE` | Required to vibrate the device when alarm is ringing. Permission automatically granted by the system; can't be revoked by user. |
 
  <hr style="border:1px solid gray">
 
