@@ -147,8 +147,8 @@ const makeStyles = fontScale =>
       left: 0,
     },
     name: {
-      fontSize: 40 / fontScale,
-      fontFamily: 'NatureBeauty',
+      fontSize: 48 / fontScale,
+      fontFamily: 'Redressed-Regular',
       marginBottom: 'auto',
       marginTop: 'auto',
       color: '#fafafa',

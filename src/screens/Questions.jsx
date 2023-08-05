@@ -23,7 +23,7 @@ import {
 // import {questions} from './data.json';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
-import {GetIcons} from '../hooks/getIcons';
+// import {GetIcons} from '../hooks/getIcons';
 import {QuesContext} from '../context/questionContext';
 import firestore, {firebase} from '@react-native-firebase/firestore';
 import QuestionCards from '../components/questionCards';
@@ -57,7 +57,7 @@ export default function Questions({navigation}) {
 
   const animateOptions = useCallback(() => {
     Animated.timing(options, {
-      toValue: Dimensions.get('window').width * 0.8,
+      toValue: Dimensions.get('window').width * 0.61,
       duration: 450,
       useNativeDriver: true,
     }).start(() => {
@@ -191,7 +191,7 @@ export default function Questions({navigation}) {
   }, [questionIndex, answer]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <ImageBackground
         source={require('../../assets/abstract.jpg')}
         resizeMode="cover"
@@ -304,7 +304,7 @@ export default function Questions({navigation}) {
           </LinearGradient>
         </Pressable>
       </Animated.ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

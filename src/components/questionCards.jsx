@@ -76,7 +76,6 @@ function QuestionCards({question}) {
               transform: [{rotateY: '180deg'}],
               alignSelf: 'flex-end',
               // padding: 5,
-              // backgroundColor: 'blue',
             }}
             onPress={() =>
               //   setTimeout(() => {

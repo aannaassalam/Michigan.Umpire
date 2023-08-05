@@ -39,7 +39,7 @@ export default function QuestionContext({children}) {
       .finally(() => setLoading(false));
   };
 
-  const checkUser = async email => {
+  const checkUser = async (email, results = 'home') => {
     setAuthLoading(true);
     try {
       const doc = await firestore().collection('submissions').doc(email).get();
