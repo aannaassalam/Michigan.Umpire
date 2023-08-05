@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {memo, useEffect, useRef, useState} from 'react';
 import {
   Animated,
   View,
@@ -13,12 +13,17 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Video from 'react-native-video';
+import {Brightness} from 'react-native-color-matrix-image-filters';
 
-export default function QuestionCards({question}) {
+function QuestionCards({question}) {
   const [showImage, setShowImage] = useState(false);
   const [startAnim, setStartAnim] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [pause, setPause] = useState(false);
 
+  const videoRef = useRef();
   const card = useRef(new Animated.Value(0)).current;
   const {fontScale} = useWindowDimensions();
 
@@ -56,6 +61,8 @@ export default function QuestionCards({question}) {
     outputRange: ['0deg', '180deg'],
   });
 
+  // console.log(question.id);
+
   return (
     <Animated.View
       style={[styles.question, , {transform: [{rotateY: rotate}]}]}
@@ -75,7 +82,11 @@ export default function QuestionCards({question}) {
               //   setTimeout(() => {
               //     setShowImage(false);
               //   }, 200)
-              setStartAnim(true)
+              {
+                setPause(false);
+                setStartAnim(true);
+                question.mediaType === 'video' ? setImageLoading(true) : null;
+              }
             }
             //   onPress={rotateCard}
           >
@@ -90,18 +101,54 @@ export default function QuestionCards({question}) {
             </Text>
           </Pressable>
 
-          <Image
-            source={{uri: question.image}}
-            style={{
-              width: '100%',
-              height: '93%',
-              resizeMode: 'contain',
-              marginTop: 'auto',
-              display: imageLoading ? 'none' : 'flex',
-              // backgroundColor: 'red',
-            }}
-            onLoadEnd={() => setImageLoading(false)}
-          />
+          {question.mediaType === 'image' ? (
+            <Image
+              source={{uri: question.image}}
+              style={{
+                width: '100%',
+                height: '90%',
+                resizeMode: 'contain',
+                marginTop: 'auto',
+                display: imageLoading ? 'none' : 'flex',
+                // backgroundColor: 'red',
+              }}
+              onLoadStart={() => console.log('loading')}
+              onLoadEnd={() => setImageLoading(false)}
+            />
+          ) : (
+            <>
+              <Pressable onPress={() => setPause(prev => !prev)}>
+                <Video
+                  source={{uri: question.image}}
+                  style={{
+                    width: '100%',
+                    height: '93%',
+                    marginTop: 'auto',
+                    display: imageLoading ? 'none' : 'flex',
+                    // backgroundColor: 'red',
+                    transform: [{rotateY: '180deg'}],
+                  }}
+                  resizeMode="contain"
+                  onBuffer={e => console.log(e)}
+                  onEnd={() => setPause(true)}
+                  onLoad={e => setImageLoading(false)}
+                  paused={pause}
+                  ref={videoRef}
+                />
+              </Pressable>
+              {pause && (
+                <TouchableOpacity
+                  style={styles.playButton}
+                  onPress={() => setPause(prev => !prev)}>
+                  <Ionicons
+                    name="play-circle-outline"
+                    size={80}
+                    color="#f7665e"
+                  />
+                </TouchableOpacity>
+              )}
+            </>
+          )}
           {imageLoading && (
             <ActivityIndicator
               size={'large'}
@@ -163,7 +210,12 @@ export default function QuestionCards({question}) {
               //   onPress={rotateCard}
             >
               <Text
-                style={{fontWeight: '500', color: '#fff', textAlign: 'center'}}>
+                style={{
+                  fontWeight: '500',
+                  color: '#fff',
+                  textAlign: 'center',
+                  width: '100%',
+                }}>
                 Show Image
               </Text>
             </TouchableOpacity>
@@ -178,6 +230,8 @@ export default function QuestionCards({question}) {
   );
 }
 
+export default memo(QuestionCards);
+
 const makeStyles = fontScale =>
   StyleSheet.create({
     question: {
@@ -191,7 +245,7 @@ const makeStyles = fontScale =>
       // paddingRight: 0,
       // flexDirection: 'row',
       justifyContent: 'space-evenly',
-      alignItems: 'flex-start',
+      // alignItems: 'flex-start',
       marginRight: 15,
     },
     question_text: {
@@ -205,5 +259,12 @@ const makeStyles = fontScale =>
       // textTransform: '',
       // backgroundColor: 'blue',
       // flex: 1,
+    },
+    playButton: {
+      color: '#f7665e',
+      position: 'absolute',
+      top: '44%',
+      left: '36%',
+      transform: [{rotateY: '180deg'}],
     },
   });

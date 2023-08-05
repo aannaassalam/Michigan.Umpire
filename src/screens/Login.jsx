@@ -26,6 +26,8 @@ export default function Login({navigation}) {
   const [err, setErr] = useState({input: '', msg: ''});
   const [authLoading, setAuthLoading] = useState(false);
 
+  const {checkUser} = useContext(QuesContext);
+
   const {fontScale} = useWindowDimensions();
 
   const styles = makeStyles(fontScale);
@@ -62,6 +64,7 @@ export default function Login({navigation}) {
       return;
     }
     storage.set('user', JSON.stringify({first_name, last_name, email}));
+    checkUser(email);
     setAuthLoading(true);
     navigation.replace('questions');
     // firestore()
@@ -119,7 +122,7 @@ export default function Login({navigation}) {
           <TextInput
             placeholder="Enter First Name"
             style={styles.input}
-            placeholderTextColor="#d2d2d2"
+            placeholderTextColor="#999"
             onFocus={() => setInputFocus(1)}
             onBlur={() => setInputFocus()}
             value={first_name}
@@ -159,7 +162,7 @@ export default function Login({navigation}) {
           <TextInput
             placeholder="Enter Last Name"
             style={styles.input}
-            placeholderTextColor="#d2d2d2"
+            placeholderTextColor="#999"
             onFocus={() => setInputFocus(2)}
             onBlur={() => setInputFocus()}
             value={last_name}
@@ -199,7 +202,7 @@ export default function Login({navigation}) {
           <TextInput
             placeholder="Enter Email"
             style={styles.input}
-            placeholderTextColor="#d2d2d2"
+            placeholderTextColor="#999"
             onFocus={() => setInputFocus(3)}
             onBlur={() => setInputFocus()}
             value={email}

@@ -40,7 +40,9 @@ export default function Results({route, navigation}) {
   });
 
   useEffect(() => {
-    checkUser(JSON.parse(storage.getString('user')).email);
+    !route.params?.fromQuestion
+      ? checkUser(JSON.parse(storage.getString('user')).email)
+      : null;
     setTimeout(() => {
       setInitialLoading(false);
     }, 840);
@@ -137,7 +139,7 @@ export default function Results({route, navigation}) {
               ...styles.text,
               color: authLoading
                 ? '#ccc'
-                : user.attempts[user.attempts.length - 1].result_state === 0
+                : user.attempts[user.attempts?.length - 1].result_state === 0
                 ? '#F47174'
                 : '#50C878',
               fontSize: 24 / fontScale,
@@ -146,14 +148,14 @@ export default function Results({route, navigation}) {
             }}>
             {authLoading
               ? 'Loading Result...'
-              : user.attempts[user.attempts.length - 1].result_state === 0
+              : user.attempts[user.attempts?.length - 1].result_state === 0
               ? 'Assignment Failed'
               : 'Assignment Passed'}
           </Text>
           <Text style={{...styles.text}}>
             {authLoading
               ? ''
-              : user.attempts[user.attempts.length - 1].result_state === 0
+              : user.attempts[user.attempts?.length - 1].result_state === 0
               ? 'Better Luck next time...'
               : 'Boom Boom Boom...'}
           </Text>
@@ -180,7 +182,7 @@ export default function Results({route, navigation}) {
             {authLoading
               ? ''
               : user.attempts[user.attempts.length - 1].result_state === 0
-              ? "Results are out, as you have not been able to clear the assignment your certificate has been put to hold. You will still recieve a result over your email, don't forget to check that out and come again stronger"
+              ? "Results are out, as you have not been able to clear the assignment your certificate has been put to hold. Don't forget you can still attempt again and come again stronger"
               : "Congratulations🎉, You have successfully cleared your assignment, and the certificate has been sent to you over mail, don't forget to check. Remember you can come again anytime and take the assignment."}
           </Text>
           {/* <Text

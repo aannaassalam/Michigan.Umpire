@@ -13,15 +13,28 @@ export default function QuestionContext({children}) {
 
   const storage = new MMKV();
 
-  const fetchQuestions = () => {
+  const fetchQuestions = async () => {
+    const settings = await firestore()
+      .collection('settings')
+      .doc('Hwwlfpcsree5njE77Wfz')
+      .get();
     firestore()
       .collection('questions')
       .get()
       .then(snap => {
         const randomQues = [];
         snap.docs.forEach(doc => randomQues.push({...doc.data(), id: doc.id}));
-        setPassingMarks(parseInt(14 * (14 / randomQues.length)));
-        setQuestions(randomQues.sort(() => Math.random() - 0.5).splice(0, 25));
+        setPassingMarks(
+          Math.round(
+            settings.data().number_of_questions *
+              (settings.data().passing_marks / 100),
+          ),
+        );
+        setQuestions(
+          randomQues
+            .sort(() => Math.random() - 0.5)
+            .splice(0, settings.data().number_of_questions),
+        );
       })
       .finally(() => setLoading(false));
   };
@@ -30,7 +43,7 @@ export default function QuestionContext({children}) {
     setAuthLoading(true);
     try {
       const doc = await firestore().collection('submissions').doc(email).get();
-
+      console.log(doc.exists);
       if (doc.exists) setUser({...doc.data(), email: doc.id});
       else if (storage.contains('user'))
         setUser(JSON.parse(storage.getString('user')));
@@ -48,6 +61,7 @@ export default function QuestionContext({children}) {
         fetchQuestions,
         loading,
         user,
+        setUser,
         checkUser,
         authLoading,
         passingMarks,

@@ -18,6 +18,7 @@ import {
   FlatList,
   ScrollView,
   useWindowDimensions,
+  ActivityIndicator,
 } from 'react-native';
 // import {questions} from './data.json';
 import LinearGradient from 'react-native-linear-gradient';
@@ -26,6 +27,7 @@ import {GetIcons} from '../hooks/getIcons';
 import {QuesContext} from '../context/questionContext';
 import firestore, {firebase} from '@react-native-firebase/firestore';
 import QuestionCards from '../components/questionCards';
+import axios from 'axios';
 
 export default function Questions({navigation}) {
   const [answer, setAnswer] = useState();
@@ -33,6 +35,9 @@ export default function Questions({navigation}) {
   const {questions, passingMarks} = useContext(QuesContext);
   const [local_questions_copy, setLocal_questions_copy] = useState(questions);
   const [score, setScore] = useState(0);
+  const [saving, setSaving] = useState(false);
+
+  const {setUser} = useContext(QuesContext);
 
   const {fontScale} = useWindowDimensions();
 
@@ -41,28 +46,16 @@ export default function Questions({navigation}) {
   const flatlist = useRef();
 
   const storage = new MMKV();
-
-  const icons = ['stadium', 'cricket_kit', 'helmet', 'cricket_kit2'];
-
   const styles = makeStyles(fontScale);
-
-  // const Dimen = Dimensions.get('window').width - 12;
   const Dimen = Dimensions.get('window').width - 12.3;
 
   useEffect(() => {
-    // console.log(questionIndex);
     if (questionIndex < local_questions_copy.length) {
-      console.log(questionIndex);
-      // Animated.timing(question, {
-      //   toValue: -Dimen * questionIndex,
-      //   duration: 500,
-      //   useNativeDriver: true,
-      // }).start();
       flatlist.current.scrollToIndex({index: questionIndex, animated: true});
     }
   }, [questionIndex]);
 
-  const animateOptions = () => {
+  const animateOptions = useCallback(() => {
     Animated.timing(options, {
       toValue: Dimensions.get('window').width * 0.8,
       duration: 450,
@@ -75,47 +68,22 @@ export default function Questions({navigation}) {
         useNativeDriver: true,
       }).start();
     });
-    // Animated.timing(opacity.one, {
-    //   toValue: 0,
-    //   delay: 200,
-    //   duration: 300,
-    //   useNativeDriver: true,
-    // }).start(() =>
-    //   Animated.timing(opacity.one, {
-    //     toValue: 1,
-    //     delay: 20,
-    //     duration: 70,
-    //     useNativeDriver: true,
-    //   }).start(),
-    // );
-    // Animated.timing(opacity.two, {
-    //   toValue: 0,
-    //   delay: 0,
-    //   duration: 200,
-    //   useNativeDriver: true,
-    // }).start(() =>
-    //   Animated.timing(opacity.two, {
-    //     toValue: 1,
-    //     delay: 500,
-    //     duration: 140,
-    //     useNativeDriver: true,
-    //   }).start(),
-    // );
-  };
+  }, []);
 
   // const optionsIntepolate = options.interpolate({
   //   inputRange: [-1, 0, 1],
   //   outputRange: ['0%', '100%', '0%'],
   // });
 
-  const saveAnswer = () => {
+  const saveAnswer = useCallback(() => {
     if (questionIndex === local_questions_copy.length - 1) {
+      setSaving(true);
       const user = JSON.parse(storage.getString('user'));
       firestore()
         .collection('submissions')
         .doc(user.email)
         .get()
-        .then(doc => {
+        .then(async doc => {
           if (doc.exists) {
             const attempts = [
               ...doc.data().attempts,
@@ -136,9 +104,14 @@ export default function Questions({navigation}) {
                 attempts,
               })
               .then(() => {
+                setUser({
+                  name: doc.data().name,
+                  email: user.email,
+                  attempts,
+                });
                 storage.set('submitted', true);
                 navigation.replace('results', {
-                  results: score >= passingMarks ? 1 : 0,
+                  fromQuestions: true,
                 });
               })
               .catch(err => console.log(err));
@@ -159,12 +132,43 @@ export default function Questions({navigation}) {
                   },
                 ],
               })
-              .then(() =>
+              .then(() => {
+                setUser({
+                  name: `${user.first_name} ${user.last_name}`,
+                  email: user.email,
+                  attempts: [
+                    {
+                      question_set: local_questions_copy,
+                      certificate_issued: score >= passingMarks,
+                      result_state: score >= passingMarks ? 1 : 0,
+                      date: new Date(),
+                      score,
+                      id: 1,
+                    },
+                  ],
+                });
                 navigation.replace('results', {
-                  results: score >= passingMarks ? 1 : 0,
-                }),
-              )
+                  fromQuestions: true,
+                });
+              })
               .catch(err => console.log(err));
+          }
+          if (score >= passingMarks) {
+            try {
+              const res = await axios.post(
+                'https://fccumpire-server.herokuapp.com/certificate',
+                {
+                  name: `${user.first_name} ${user.last_name}`,
+                  email: user.email,
+                },
+              );
+              // console.log(res);
+              if (res.status === 200) {
+                setSaving(false);
+              }
+            } catch (err) {
+              console.log(err);
+            }
           }
         })
         .catch(err => console.log(err));
@@ -184,7 +188,8 @@ export default function Questions({navigation}) {
     } else {
       null;
     }
-  };
+  }, [questionIndex, answer]);
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -283,13 +288,19 @@ export default function Questions({navigation}) {
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
             style={styles.button}>
-            <Text style={styles.buttonText}>
-              {questionIndex === questions.length - 1 ? 'Submit' : 'Next'}
-            </Text>
-            <Image
-              source={require('../../assets/right-arrow.png')}
-              style={styles.icon}
-            />
+            {saving ? (
+              <ActivityIndicator animating={true} color="#fff" />
+            ) : (
+              <>
+                <Text style={styles.buttonText}>
+                  {questionIndex === questions.length - 1 ? 'Submit' : 'Next'}
+                </Text>
+                <Image
+                  source={require('../../assets/right-arrow.png')}
+                  style={styles.icon}
+                />
+              </>
+            )}
           </LinearGradient>
         </Pressable>
       </Animated.ScrollView>

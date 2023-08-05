@@ -101,8 +101,8 @@ android {
         applicationId "com.fccumpire"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.0"
         multiDexEnabled true
     }
 
@@ -122,10 +122,10 @@ android {
             keyPassword 'android'
         }
         release {
-      storeFile file('your_key_name.keystore')
-      storePassword '123456'
-      keyAlias 'your_key_alias'
-      keyPassword '123456'
+      storeFile file('fccumpire.keystore')
+      storePassword 'fccumpire@2023'
+      keyAlias 'fccumpire'
+      keyPassword 'fccumpire@2023'
     }
     }
     buildTypes {
@@ -163,6 +163,16 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation 'com.android.support:multidex:2.0.1'
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+
+    implementation 'com.facebook.fresco:fresco:2.0.0'
+    // For animated GIF support
+
+ implementation 'com.facebook.fresco:animated-gif:2.6.0'
+    // For WebP support, including animated WebP
+
+ implementation 'com.facebook.fresco:animated-webp:2.0.0'
+
+ implementation 'com.facebook.fresco:webpsupport:2.0.0'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
