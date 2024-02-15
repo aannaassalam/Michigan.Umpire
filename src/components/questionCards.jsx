@@ -61,14 +61,12 @@ function QuestionCards({question}) {
     outputRange: ['0deg', '180deg'],
   });
 
-  // console.log(question.id);
-
   return (
     <Animated.View
       style={[styles.question, , {transform: [{rotateY: rotate}]}]}
       key={question.id}>
       {showImage ? (
-        <View style={{flex: 1, width: '100%'}}>
+        <View style={{flex: 1, width: '100%', position: 'relative'}}>
           <Pressable
             style={{
               flexDirection: 'row',
@@ -108,11 +106,17 @@ function QuestionCards({question}) {
                 height: '90%',
                 resizeMode: 'contain',
                 marginTop: 'auto',
-                display: imageLoading ? 'none' : 'flex',
+                display: 'flex',
                 // backgroundColor: 'red',
               }}
-              onLoadStart={() => console.log('loading')}
-              onLoadEnd={() => setImageLoading(false)}
+              onError={() => console.log('issue')}
+              onProgress={() => console.log('progressing')}
+              onLoadEnd={() => {
+                setImageLoading(false);
+              }}
+              onLoad={() => {
+                setImageLoading(false);
+              }}
             />
           ) : (
             <>
@@ -123,7 +127,7 @@ function QuestionCards({question}) {
                     width: '100%',
                     height: '93%',
                     marginTop: 'auto',
-                    display: imageLoading ? 'none' : 'flex',
+                    display: 'flex',
                     // backgroundColor: 'red',
                     transform: [{rotateY: '180deg'}],
                   }}
@@ -149,12 +153,23 @@ function QuestionCards({question}) {
             </>
           )}
           {imageLoading && (
-            <ActivityIndicator
-              size={'large'}
-              style={{flex: 1}}
-              color="#ff552d"
-              animating={imageLoading}
-            />
+            <View
+              style={{
+                height: Dimensions.get('screen').height * 0.4,
+                width: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ActivityIndicator
+                size={'large'}
+                style={{flex: 1}}
+                color="#ff552d"
+                animating={imageLoading}
+              />
+            </View>
           )}
         </View>
       ) : (

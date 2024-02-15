@@ -68,8 +68,8 @@ export default function Start({navigation}) {
       <Pressable
         onPress={() => {
           if (storage.contains('user')) {
-            fetchQuestions();
-            authLoading ? null : navigation.navigate('questions');
+            // fetchQuestions();
+            authLoading ? null : navigation.navigate('categories');
           } else {
             navigation.navigate('login');
           }

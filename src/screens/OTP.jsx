@@ -1,95 +1,132 @@
-import React, {useContext, useState} from 'react';
+import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 import {
-  Button,
+  ActivityIndicator,
+  Dimensions,
   ImageBackground,
+  Keyboard,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
-  Dimensions,
-  View,
-  Keyboard,
-  ScrollView,
-  ActivityIndicator,
-  useWindowDimensions,
   TouchableWithoutFeedback,
+  View,
+  useWindowDimensions,
 } from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
-import {QuesContext} from '../context/questionContext';
-import firestore from '@react-native-firebase/firestore';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import axios from 'axios';
 
-export default function Login({navigation}) {
+export default function OTP({navigation, route}) {
+  const {email, last_name, first_name} = route.params;
   const [inputFocus, setInputFocus] = useState();
-  const [first_name, setFirst_name] = useState('');
-  const [last_name, setLast_name] = useState('');
-  const [email, setEmail] = useState('');
-  const [err, setErr] = useState({input: '', msg: ''});
+  const [err, setErr] = useState('');
+  const inputRefs = [];
+  const [otp_arr, setOtp_arr] = useState([]);
+  const [otp, setOtp] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
-
-  const {checkUser} = useContext(QuesContext);
-
   const {fontScale} = useWindowDimensions();
 
   const styles = makeStyles(fontScale);
 
+  useEffect(() => {
+    inputRefs[0].focus();
+  }, []);
+
+  const focusPrevious = (key, index) => {
+    // console.log('back');
+    if (key === 'Backspace' && index !== 0) {
+      inputRefs[index - 1].focus();
+    }
+  };
+
+  const focusNext = (index, value) => {
+    // console.log(inputRefs);\
+    if (index < inputRefs.length - 1 && value.trim().length > 0) {
+      inputRefs[index + 1].focus();
+    }
+    // console.log(index, inputRefs.length - 1, 'sd');
+    if (index === inputRefs.length - 1) {
+      // console.log('two');
+      // const local_otp = otp;
+      // local_otp[index] = value;
+      // setOtp(local_otp);
+      inputRefs[index].blur();
+    }
+    const local_otp = otp_arr;
+    local_otp[index] = value;
+    setOtp_arr(local_otp);
+    setOtp(otp_arr.join(''));
+    // this.props.getOtp(otp.join(''));
+  };
+
   const storage = new MMKV();
 
-  const submitLogin = async () => {
-    if (first_name.trim() === '') {
-      setErr({
-        input: 'fname',
-        msg: 'Please fill First name!',
-      });
-      return;
+  const submitOTP = () => {
+    if (otp.length < 4) {
+      setErr('Please enter a valid OTP!');
+    } else {
+      setAuthLoading(true);
+      axios
+        .post('https://fccumpire-server.herokuapp.com/check-fccumpire-otp', {
+          email: email,
+          otp: parseInt(otp),
+        })
+        .then(() => {
+          storage.set('user', JSON.stringify({first_name, last_name, email}));
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'start'}, {name: 'categories'}],
+          });
+        })
+        .catch(() => {
+          setErr('Incorrect OTP!');
+        })
+        .finally(() => setAuthLoading(false));
     }
-    if (last_name.trim() === '') {
-      setErr({
-        input: 'lname',
-        msg: 'Please fill Last name!',
-      });
-      return;
-    }
-    if (email.trim() === '') {
-      setErr({
-        input: 'email',
-        msg: 'Please provide your email!',
-      });
-      return;
-    }
-    if (!email.includes('@')) {
-      setErr({
-        input: 'email',
-        msg: 'Please enter valid email address!',
-      });
-      return;
-    }
-    setAuthLoading(true);
-    axios
-      .post('https://fccumpire-server.herokuapp.com/send-fccumpire-otp', {
-        email,
-      })
-      .then(() => {
-        navigation.navigate('otp', {first_name, last_name, email});
-      })
-      .catch(() => {})
-      .finally(() => setAuthLoading(false));
-    // firestore()
-    //   .collection('submissions')
-    //   .doc(email)
-    //   .get()
-    //   .then(doc => {
-    //     if (!doc.exists) {
-    //       navigation.replace('questions');
-    //     } else {
-    //       navigation.replace('results');
-    //     }
-    //   })
-    //   .catch(err => console.log(err));
-    // .finally(() => setAuthLoading(false));
   };
+
+  const inputs = Array(4).fill(0);
+
+  const renderedInputs = inputs.map((i, j) => (
+    <LinearGradient
+      colors={
+        inputFocus === 1
+          ? ['#ff552d', '#f19717']
+          : err.input === 'fname'
+          ? ['#F47174', '#F47174']
+          : ['#999', '#999']
+      }
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 0}}
+      key={j}
+      style={{
+        elevation: 8,
+        marginBottom: 5,
+        shadowColor: '#333',
+        borderRadius: 20,
+        padding: 2,
+        overflow: 'hidden',
+        flex: 1,
+        flexDirection: 'row',
+      }}>
+      <TextInput
+        placeholder="-"
+        style={styles.input}
+        placeholderTextColor="#999"
+        // value={otp1}
+        onChangeText={v => focusNext(j, v)}
+        onKeyPress={e => focusPrevious(e.nativeEvent.key, j)}
+        maxLength={1}
+        keyboardType="numeric"
+        numberOfLines={1}
+        ref={ref => {
+          inputRefs[j] = ref;
+        }}
+      />
+    </LinearGradient>
+  ));
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
@@ -110,9 +147,10 @@ export default function Login({navigation}) {
               backgroundColor: 'rgba(0,0,0,0)',
             }}></View>
           <Text style={styles.headingText}>Enter your</Text>
-          <Text style={{...styles.headingText, marginBottom: 40}}>Details</Text>
+          <Text style={{...styles.headingText, marginBottom: 40}}>OTP</Text>
           <View style={styles.inputs}>
-            <LinearGradient
+            {renderedInputs}
+            {/* <LinearGradient
               colors={
                 inputFocus === 1
                   ? ['#ff552d', '#f19717']
@@ -129,29 +167,23 @@ export default function Login({navigation}) {
                 borderRadius: 20,
                 padding: 2,
                 overflow: 'hidden',
+                flex: 1,
+                flexDirection: 'row',
               }}>
               <TextInput
-                placeholder="Enter First Name"
+                placeholder="-"
                 style={styles.input}
                 placeholderTextColor="#999"
                 onFocus={() => setInputFocus(1)}
                 onBlur={() => setInputFocus()}
-                value={first_name}
+                value={otp1}
                 onChangeText={text => {
-                  setFirst_name(text);
-                  setErr({input: '', msg: ''});
+                  setOtp1(text);
+                  setErr('Please Enter Valid OTP');
                 }}
+                numberOfLines={1}
               />
             </LinearGradient>
-            <Text
-              style={{
-                color: '#F47174',
-                marginBottom: 5,
-                fontWeight: '500',
-                paddingHorizontal: 20,
-              }}>
-              {err.input === 'fname' && err.msg}
-            </Text>
             <LinearGradient
               colors={
                 inputFocus === 2
@@ -169,29 +201,23 @@ export default function Login({navigation}) {
                 borderRadius: 20,
                 padding: 2,
                 overflow: 'hidden',
+                flex: 1,
+                flexDirection: 'row',
               }}>
               <TextInput
-                placeholder="Enter Last Name"
+                placeholder="-"
                 style={styles.input}
                 placeholderTextColor="#999"
                 onFocus={() => setInputFocus(2)}
                 onBlur={() => setInputFocus()}
-                value={last_name}
+                value={otp2}
                 onChangeText={text => {
-                  setLast_name(text);
-                  setErr({input: '', msg: ''});
+                  setOtp2(text);
+                  setErr('Please Enter Valid OTP');
                 }}
+                numberOfLines={1}
               />
             </LinearGradient>
-            <Text
-              style={{
-                color: '#F47174',
-                marginBottom: 5,
-                fontWeight: '500',
-                paddingHorizontal: 20,
-              }}>
-              {err.input === 'lname' && err.msg}
-            </Text>
             <LinearGradient
               colors={
                 inputFocus === 3
@@ -209,37 +235,75 @@ export default function Login({navigation}) {
                 borderRadius: 20,
                 padding: 2,
                 overflow: 'hidden',
+                flex: 1,
+                flexDirection: 'row',
               }}>
               <TextInput
-                placeholder="Enter Email"
+                placeholder="-"
                 style={styles.input}
                 placeholderTextColor="#999"
                 onFocus={() => setInputFocus(3)}
                 onBlur={() => setInputFocus()}
-                value={email}
+                value={otp3}
                 onChangeText={text => {
-                  setEmail(text.toLowerCase());
-                  setErr({input: '', msg: ''});
+                  setOtp3(text);
+                  setErr('Please Enter Valid OTP');
                 }}
+                numberOfLines={1}
               />
             </LinearGradient>
-            <Text
+            <LinearGradient
+              colors={
+                inputFocus === 4
+                  ? ['#ff552d', '#f19717']
+                  : err.input === 'email'
+                  ? ['#F47174', '#F47174']
+                  : ['#999', '#999']
+              }
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
               style={{
-                color: '#F47174',
+                elevation: 8,
                 marginBottom: 5,
-                fontWeight: '500',
-                paddingHorizontal: 20,
+                shadowColor: '#333',
+                borderRadius: 20,
+                padding: 2,
+                overflow: 'hidden',
+                flex: 1,
+                flexDirection: 'row',
               }}>
-              {err.input === 'email' && err.msg}
-            </Text>
+              <TextInput
+                placeholder="-"
+                style={styles.input}
+                placeholderTextColor="#999"
+                onFocus={() => setInputFocus(4)}
+                onBlur={() => setInputFocus()}
+                value={otp4}
+                onChangeText={text => {
+                  setOtp4(text);
+                  setErr('Please Enter Valid OTP');
+                }}
+                numberOfLines={1}
+                // maxLength={1}
+              />
+            </LinearGradient> */}
           </View>
+          <Text
+            style={{
+              color: '#F47174',
+              marginTop: 5,
+              fontWeight: '700',
+              paddingHorizontal: 50,
+            }}>
+            {err}
+          </Text>
           <Pressable
             style={{
               marginTop: 40,
               elevation: 80,
               shadowColor: '#000',
             }}
-            onPress={submitLogin}>
+            onPress={submitOTP}>
             <LinearGradient
               colors={['#ff552d', '#f19717']}
               start={{x: 0, y: 0}}
@@ -285,15 +349,21 @@ const makeStyles = fontScale =>
       fontWeight: '700',
     },
     inputs: {
+      flexDirection: 'row',
       paddingHorizontal: 50,
+      gap: 5,
     },
     input: {
       backgroundColor: '#efefef',
-      fontWeight: '500',
+      fontWeight: '700',
       paddingHorizontal: 20,
-      paddingVertical: 9,
-      color: '#333',
+      paddingVertical: Platform.OS === 'android' ? 9 : 20,
+      color: '#ff552d',
+      //   color: '#333',
       borderRadius: 20,
+      flex: 1,
+      textAlign: 'center',
+      fontSize: 18 / fontScale,
     },
     button: {
       width: 250,

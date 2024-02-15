@@ -12,8 +12,8 @@ import {MMKV} from 'react-native-mmkv';
 import {QuesContext} from '../context/questionContext';
 
 export const SplashScreen = ({isAppReady, children}) => {
-  const {loading, questions} = useContext(QuesContext);
-  const loadingState = !loading && isAppReady;
+  const {questions} = useContext(QuesContext);
+  const loadingState = isAppReady;
 
   return (
     <>
@@ -38,12 +38,12 @@ export default function Splash({isAppReady}) {
 
   const styles = makeStyles(fontScale);
 
-  const {fetchQuestions, loading, checkUser} = useContext(QuesContext);
+  // const {fetchQuestions, loading, checkUser} = useContext(QuesContext);
   const containerOpacity = useRef(new Animated.Value(1)).current;
   const imageOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    fetchQuestions();
+    // fetchQuestions();
     // if (storage.contains('user')) {
     //   checkUser(JSON.parse(storage.getString('user')).email);
     // }
@@ -60,11 +60,11 @@ export default function Splash({isAppReady}) {
 
   useEffect(() => {
     if (state === WAIT_FOR_APP_TO_BE_READY) {
-      if (isAppReady && !loading) {
+      if (isAppReady) {
         setState(FADE_OUT);
       }
     }
-  }, [isAppReady, state, loading]);
+  }, [isAppReady, state]);
 
   useEffect(() => {
     if (state === FADE_OUT) {
@@ -81,7 +81,7 @@ export default function Splash({isAppReady}) {
 
   if (state === HIDDEN) return null;
 
-  if (isAppReady && !loading) return null;
+  if (isAppReady) return null;
 
   return (
     <Animated.View

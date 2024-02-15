@@ -123,9 +123,9 @@ android {
         }
         release {
       storeFile file('fccumpire.keystore')
-      storePassword 'fccumpire@2023'
+      storePassword '123456'
       keyAlias 'fccumpire'
-      keyPassword 'fccumpire@2023'
+      keyPassword '123456'
     }
     }
     buildTypes {

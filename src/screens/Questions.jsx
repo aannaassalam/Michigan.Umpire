@@ -28,16 +28,17 @@ import {QuesContext} from '../context/questionContext';
 import firestore, {firebase} from '@react-native-firebase/firestore';
 import QuestionCards from '../components/questionCards';
 import axios from 'axios';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-export default function Questions({navigation}) {
+export default function Questions({navigation, route}) {
+  const {category} = route.params;
   const [answer, setAnswer] = useState();
   const [questionIndex, setQuestionIndex] = useState(0);
-  const {questions, passingMarks} = useContext(QuesContext);
+  const {questions, passingMarks, fetchQuestions, loading, setUser} =
+    useContext(QuesContext);
   const [local_questions_copy, setLocal_questions_copy] = useState(questions);
   const [score, setScore] = useState(0);
   const [saving, setSaving] = useState(false);
-
-  const {setUser} = useContext(QuesContext);
 
   const {fontScale} = useWindowDimensions();
 
@@ -48,6 +49,14 @@ export default function Questions({navigation}) {
   const storage = new MMKV();
   const styles = makeStyles(fontScale);
   const Dimen = Dimensions.get('window').width - 12.3;
+
+  useEffect(() => {
+    fetchQuestions(category);
+  }, []);
+
+  useEffect(() => {
+    setLocal_questions_copy(questions);
+  }, [questions]);
 
   useEffect(() => {
     if (questionIndex < local_questions_copy.length) {
@@ -189,6 +198,24 @@ export default function Questions({navigation}) {
       null;
     }
   }, [questionIndex, answer]);
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          {alignItems: 'center', justifyContent: 'center'},
+        ]}
+        edges={['top']}>
+        <ImageBackground
+          source={require('../../assets/abstract.jpg')}
+          resizeMode="cover"
+          style={styles.backgroundImage}
+        />
+        <ActivityIndicator size={'large'} color={'#fff'} />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
