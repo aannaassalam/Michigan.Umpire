@@ -31,7 +31,7 @@ import axios from 'axios';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function Questions({navigation, route}) {
-  const {category} = route.params;
+  const {category, subcategory} = route.params;
   const [answer, setAnswer] = useState();
   const [questionIndex, setQuestionIndex] = useState(0);
   const {questions, passingMarks, fetchQuestions, loading, setUser} =
@@ -51,7 +51,7 @@ export default function Questions({navigation, route}) {
   const Dimen = Dimensions.get('window').width - 12.3;
 
   useEffect(() => {
-    fetchQuestions(category);
+    fetchQuestions(category, subcategory);
   }, []);
 
   useEffect(() => {
@@ -281,7 +281,7 @@ export default function Questions({navigation, route}) {
           }}>
           {local_questions_copy[questionIndex]?.options.map((option, index) => {
             return (
-              <View style={{width: '48%'}} key={index}>
+              <View style={{width: '100%'}} key={index}>
                 <Pressable
                   style={{
                     ...styles.option,
@@ -392,7 +392,7 @@ const makeStyles = fontScale =>
     },
     option: {
       width: '100%',
-      height: 50,
+      minHeight: 50,
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: 20,

@@ -13,7 +13,7 @@ export default function QuestionContext({children}) {
 
   const storage = new MMKV();
 
-  const fetchQuestions = async category => {
+  const fetchQuestions = async (category, subcategory) => {
     setLoading(true);
     const settings = await firestore()
       .collection('settings')

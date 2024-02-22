@@ -10,6 +10,7 @@ import Results from '../screens/Results';
 import {MMKV} from 'react-native-mmkv';
 import OTP from '../screens/OTP';
 import Categories from '../screens/Categories';
+import SubCategories from '../screens/SubCategories';
 
 export default function StackNavigations() {
   const Stack = createStackNavigator();
@@ -26,6 +27,7 @@ export default function StackNavigations() {
       <Stack.Screen name="login" component={Login} />
       <Stack.Screen name="otp" component={OTP} />
       <Stack.Screen name="categories" component={Categories} />
+      <Stack.Screen name="subcategories" component={SubCategories} />
       <Stack.Screen name="questions" component={Questions} />
       <Stack.Screen name="results" component={Results} />
     </Stack.Navigator>

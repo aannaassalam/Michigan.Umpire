@@ -20,10 +20,12 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
 
-export default function Categories({navigation, route}) {
-  const [categories, setCategories] = useState([]);
-  const [selectCategory, setSelectedCategory] = useState('');
+export default function SubCategories({navigation, route}) {
+  const [tournaments, setTournaments] = useState([]);
+  const [selectedTournament, setSelectedTournament] = useState('');
   const {fontScale} = useWindowDimensions();
+
+  const {category} = route.params;
 
   const styles = makeStyles(fontScale);
 
@@ -33,7 +35,7 @@ export default function Categories({navigation, route}) {
       .doc('Hwwlfpcsree5njE77Wfz')
       .get()
       .then(doc => {
-        setCategories(doc.data().categories.filter(_cat => _cat.active));
+        setTournaments(doc.data().tournaments.filter(_cat => _cat.active));
       });
   }, []);
 
@@ -65,41 +67,39 @@ export default function Categories({navigation, route}) {
             }}></View>
           <Text style={styles.headingText}>Choose Your</Text>
           <Text style={{...styles.headingText, marginBottom: 40}}>
-            Categories
+            Tournament
           </Text>
           <View style={styles.categories}>
-            {categories
-              .filter(_cat => _cat.title !== 'Mandatory')
-              .map((_cat, index) => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => setSelectedCategory(_cat.title)}
-                    key={index}>
-                    <LinearGradient
-                      colors={
-                        selectCategory === _cat.title
-                          ? ['#ff552d', '#f19717']
-                          : ['#999', '#999']
-                      }
-                      start={{x: 0, y: 0}}
-                      end={{x: 1, y: 0}}
-                      style={{
-                        elevation: 8,
-                        marginBottom: 5,
-                        shadowColor: '#333',
-                        borderRadius: 20,
-                        padding: 2,
-                        overflow: 'hidden',
-                        // flex: 1,
-                        flexDirection: 'row',
-                      }}>
-                      <View style={styles.category}>
-                        <Text style={styles.category_text}>{_cat.title}</Text>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                );
-              })}
+            {tournaments.map((_cat, index) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => setSelectedTournament(_cat.title)}
+                  key={index}>
+                  <LinearGradient
+                    colors={
+                      selectedTournament === _cat.title
+                        ? ['#ff552d', '#f19717']
+                        : ['#999', '#999']
+                    }
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 0}}
+                    style={{
+                      elevation: 8,
+                      marginBottom: 5,
+                      shadowColor: '#333',
+                      borderRadius: 20,
+                      padding: 2,
+                      overflow: 'hidden',
+                      // flex: 1,
+                      flexDirection: 'row',
+                    }}>
+                    <View style={styles.category}>
+                      <Text style={styles.category_text}>{_cat.title}</Text>
+                    </View>
+                  </LinearGradient>
+                </TouchableOpacity>
+              );
+            })}
           </View>
           <Pressable
             style={{
@@ -107,17 +107,12 @@ export default function Categories({navigation, route}) {
               elevation: 80,
               shadowColor: '#000',
             }}
-            onPress={() => {
-              if (selectCategory === 'Team Member Umpiring Certification') {
-                navigation.navigate('subcategories', {
-                  category: selectCategory,
-                });
-              } else {
-                navigation.navigate('questions', {
-                  category: selectCategory,
-                });
-              }
-            }}>
+            onPress={() =>
+              navigation.navigate('questions', {
+                category,
+                subcategory: selectedTournament,
+              })
+            }>
             <LinearGradient
               colors={['#ff552d', '#f19717']}
               start={{x: 0, y: 0}}
