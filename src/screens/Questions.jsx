@@ -392,7 +392,9 @@ const makeStyles = fontScale =>
     },
     option: {
       width: '100%',
-      minHeight: 50,
+      // minHeight: 50,
+      padding: 12,
+      paddingVertical: 15,
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: 20,
