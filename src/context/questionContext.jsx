@@ -23,22 +23,71 @@ export default function QuestionContext({children}) {
       .collection('questions')
       .get()
       .then(snap => {
+        // Mandatory Questions
+
         let randomQues = snap.docs
           .filter(
             _doc =>
               _doc.data().activityStatus === 1 &&
               _doc.data().status === 1 &&
-              _doc.data().category.toLowerCase() === 'general',
+              _doc.data().category.toLowerCase() === 'mandatory',
           )
+          .sort(() => Math.random() - 0.5)
           .map(doc => ({...doc.data(), id: doc.id}));
 
-        if (category.toLowerCase() === 'general') {
-          randomQues = randomQues.slice(
-            0,
-            10 + settings.data().number_of_questions,
+        // Team Questions
+
+        const subcategoryQuestions = {};
+        snap.docs
+          .filter(
+            _doc =>
+              _doc.data().activityStatus === 1 &&
+              _doc.data.status === 1 &&
+              _doc.data().category === category,
+          )
+          .sort(() => Math.random() - 0.5)
+          .forEach(doc => {
+            subcategoryQuestions[doc.data().subCategory] = [
+              ...(subcategoryQuestions[doc.data().subCategory] || []),
+              {...doc.data(), id: doc.id},
+            ];
+          });
+
+        // General Questions
+
+        const generalQues = snap.docs
+          .filter(
+            _doc =>
+              _doc.data().activityStatus === 1 &&
+              _doc.data().status === 1 &&
+              _doc.data().category === category,
+          )
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 5)
+          .map(_doc => ({..._doc.data(), id: _doc.id}));
+
+        // Conditional Segregation
+
+        if (category === 'General') {
+          randomQues = [...randomQues.slice(0, 10), ...generalQues];
+        } else if (category === 'FCC Umpiring Certification') {
+          const categoryQues = Object.values(subcategoryQuestions).flatMap(
+            _subcat => _subcat.slice(0, 3),
           );
-        } else {
-          const categoryQues = snap.docs
+          randomQues = [
+            ...randomQues.slice(0, 10),
+            ...generalQues,
+            ...categoryQues,
+          ];
+        } else if (category === 'Team Member Umpiring Certification') {
+          const categoryQues = subcategoryQuestions[subcategory].slice(0, 3);
+          randomQues = [
+            ...randomQues.slice(0, 10),
+            ...generalQues,
+            ...categoryQues,
+          ];
+        } else if (category === 'Box Cricket Umpiring Certification') {
+          randomQues = snap.docs
             .filter(
               _doc =>
                 _doc.data().activityStatus === 1 &&
@@ -46,17 +95,17 @@ export default function QuestionContext({children}) {
                 _doc.data().category === category,
             )
             .sort(() => Math.random() - 0.5)
-            .slice(0, settings.data().number_of_questions)
-            .map(_doc => ({..._doc.data(), id: _doc.id}));
-
-          randomQues = [...randomQues.slice(0, 10), ...categoryQues];
+            .map(doc => ({...doc.data(), id: doc.id}))
+            .slice(0, 15);
         }
+
         setPassingMarks(
           Math.round(
             settings.data().number_of_questions *
               (settings.data().passing_marks / 100),
           ),
         );
+
         setQuestions(randomQues.sort(() => Math.random() - 0.5));
       })
       // .catch(err => console.log(err))
