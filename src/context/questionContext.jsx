@@ -41,16 +41,15 @@ export default function QuestionContext({children}) {
         snap.docs
           .filter(
             _doc =>
-              _doc.data().activityStatus === 1 &&
-              _doc.data.status === 1 &&
-              _doc.data().category === category,
+              _doc.data().activityStatus === 1 && _doc.data().status === 1,
           )
           .sort(() => Math.random() - 0.5)
           .forEach(doc => {
-            subcategoryQuestions[doc.data().subCategory] = [
-              ...(subcategoryQuestions[doc.data().subCategory] || []),
-              {...doc.data(), id: doc.id},
-            ];
+            if (doc.data().subCategory)
+              subcategoryQuestions[doc.data().subCategory] = [
+                ...(subcategoryQuestions[doc.data().subCategory] || []),
+                {...doc.data(), id: doc.id},
+              ];
           });
 
         // General Questions
@@ -60,7 +59,7 @@ export default function QuestionContext({children}) {
             _doc =>
               _doc.data().activityStatus === 1 &&
               _doc.data().status === 1 &&
-              _doc.data().category === category,
+              _doc.data().category === 'General',
           )
           .sort(() => Math.random() - 0.5)
           .slice(0, 5)
@@ -74,6 +73,7 @@ export default function QuestionContext({children}) {
           const categoryQues = Object.values(subcategoryQuestions).flatMap(
             _subcat => _subcat.slice(0, 3),
           );
+          console.log(categoryQues.length, generalQues.length);
           randomQues = [
             ...randomQues.slice(0, 10),
             ...generalQues,

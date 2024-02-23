@@ -8,6 +8,7 @@ import {
   Keyboard,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -48,83 +49,85 @@ export default function SubCategories({navigation, route}) {
   // };
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}>
-        <View style={styles.container}>
-          <ImageBackground
-            source={require('../../assets/abstract.jpg')}
-            resizeMode="cover"
-            style={styles.backgroundImage}
-          />
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: Dimensions.get('window').width,
-              height: Dimensions.get('window').height,
-              backgroundColor: 'rgba(0,0,0,0)',
-            }}></View>
-          <Text style={styles.headingText}>Choose Your</Text>
-          <Text style={{...styles.headingText, marginBottom: 40}}>
-            Tournament
-          </Text>
-          <View style={styles.categories}>
-            {tournaments.map((_cat, index) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => setSelectedTournament(_cat.title)}
-                  key={index}>
-                  <LinearGradient
-                    colors={
-                      selectedTournament === _cat.title
-                        ? ['#ff552d', '#f19717']
-                        : ['#999', '#999']
-                    }
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 0}}
-                    style={{
-                      elevation: 8,
-                      marginBottom: 5,
-                      shadowColor: '#333',
-                      borderRadius: 20,
-                      padding: 2,
-                      overflow: 'hidden',
-                      // flex: 1,
-                      flexDirection: 'row',
-                    }}>
-                    <View style={styles.category}>
-                      <Text style={styles.category_text}>{_cat.title}</Text>
-                    </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          <Pressable
-            style={{
-              marginTop: 40,
-              elevation: 80,
-              shadowColor: '#000',
-            }}
-            onPress={() =>
-              navigation.navigate('questions', {
-                category,
-                subcategory: selectedTournament,
-              })
-            }>
-            <LinearGradient
-              colors={['#ff552d', '#f19717']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={styles.button}>
-              <Text style={styles.buttonText}>Submit & Continue</Text>
-            </LinearGradient>
-          </Pressable>
-          {/* </View> */}
+    <View style={{flex: 1}}>
+      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}> */}
+      <ImageBackground
+        source={require('../../assets/abstract.jpg')}
+        resizeMode="cover"
+        style={styles.backgroundImage}
+      />
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{paddingTop: 140, paddingBottom: 50}}>
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+            backgroundColor: 'rgba(0,0,0,0)',
+          }}></View>
+        <Text style={styles.headingText}>Choose Your</Text>
+        <Text style={{...styles.headingText, marginBottom: 40}}>
+          Tournament
+        </Text>
+        <View style={styles.categories}>
+          {tournaments.map((_cat, index) => {
+            return (
+              <TouchableOpacity
+                onPress={() => setSelectedTournament(_cat.title)}
+                key={index}>
+                <LinearGradient
+                  colors={
+                    selectedTournament === _cat.title
+                      ? ['#ff552d', '#f19717']
+                      : ['#999', '#999']
+                  }
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  style={{
+                    elevation: 8,
+                    marginBottom: 5,
+                    shadowColor: '#333',
+                    borderRadius: 20,
+                    padding: 2,
+                    overflow: 'hidden',
+                    // flex: 1,
+                    flexDirection: 'row',
+                  }}>
+                  <View style={styles.category}>
+                    <Text style={styles.category_text}>{_cat.title}</Text>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            );
+          })}
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAwareScrollView>
+        <Pressable
+          style={{
+            marginTop: 40,
+            elevation: 80,
+            shadowColor: '#000',
+          }}
+          onPress={() =>
+            navigation.navigate('questions', {
+              category,
+              subcategory: selectedTournament,
+            })
+          }>
+          <LinearGradient
+            colors={['#ff552d', '#f19717']}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={styles.button}>
+            <Text style={styles.buttonText}>Submit & Continue</Text>
+          </LinearGradient>
+        </Pressable>
+        {/* </View> */}
+      </ScrollView>
+      {/* </TouchableWithoutFeedback> */}
+    </View>
   );
 }
 
@@ -132,10 +135,10 @@ const makeStyles = fontScale =>
   StyleSheet.create({
     container: {
       flex: 1,
-      height: '100%',
-      backgroundColor: '#fcfcfc',
-      paddingTop: 140,
+      // height: '100%',
+      // backgroundColor: '#fcfcfc',
       position: 'relative',
+      // marginTop: 140,
     },
     backgroundImage: {
       width: Dimensions.get('window').width,

@@ -263,7 +263,7 @@ export default function Questions({navigation, route}) {
           alignItems: 'center',
           justifyContent: 'center',
           paddingTop: 10,
-          paddingBottom: 30,
+          paddingBottom: 50,
           marginBottom: 15,
         }}>
         <Text style={styles.helperText}>Select the correct answer</Text>
