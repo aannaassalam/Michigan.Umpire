@@ -31,7 +31,7 @@ import axios from 'axios';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function Questions({navigation, route}) {
-  const {category, subcategory} = route.params;
+  const {category, subcategory = ''} = route.params;
   const [answer, setAnswer] = useState();
   const [questionIndex, setQuestionIndex] = useState(0);
   const {questions, passingMarks, fetchQuestions, loading, setUser} =
@@ -169,6 +169,8 @@ export default function Questions({navigation, route}) {
                 {
                   name: `${user.first_name} ${user.last_name}`,
                   email: user.email,
+                  category,
+                  subcategory,
                 },
               );
               // console.log(res);

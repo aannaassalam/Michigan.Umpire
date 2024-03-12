@@ -69,7 +69,9 @@ export default function Categories({navigation, route}) {
           </Text>
           <View style={styles.categories}>
             {categories
-              .filter(_cat => _cat.title !== 'Mandatory')
+              .filter(
+                _cat => _cat.title !== 'Mandatory' && _cat.title !== 'General',
+              )
               .map((_cat, index) => {
                 return (
                   <TouchableOpacity

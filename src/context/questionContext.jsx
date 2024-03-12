@@ -19,6 +19,12 @@ export default function QuestionContext({children}) {
       .collection('settings')
       .doc('Hwwlfpcsree5njE77Wfz')
       .get();
+    const number_question_obj = {};
+    settings.data().tournaments.forEach(_tournament => {
+      number_question_obj[_tournament.title] = parseInt(
+        _tournament.number_of_questions,
+      );
+    });
     firestore()
       .collection('questions')
       .get()
@@ -62,25 +68,26 @@ export default function QuestionContext({children}) {
               _doc.data().category === 'General',
           )
           .sort(() => Math.random() - 0.5)
-          .slice(0, 5)
+          .slice(0, 15)
           .map(_doc => ({..._doc.data(), id: _doc.id}));
 
         // Conditional Segregation
 
         if (category === 'General') {
-          randomQues = [...randomQues.slice(0, 10), ...generalQues];
+          randomQues = [...randomQues.slice(0, 5), ...generalQues];
         } else if (category === 'FCC Umpiring Certification') {
-          const categoryQues = Object.values(subcategoryQuestions).flatMap(
-            _subcat => _subcat.slice(0, 3),
+          const categoryQues = Object.entries(subcategoryQuestions).flatMap(
+            _subcat => {
+              return _subcat[1].slice(0, number_question_obj[_subcat[0]]);
+            },
           );
-          console.log(categoryQues.length, generalQues.length);
           randomQues = [
             ...randomQues.slice(0, 10),
             ...generalQues,
             ...categoryQues,
           ];
         } else if (category === 'Team Member Umpiring Certification') {
-          const categoryQues = subcategoryQuestions[subcategory].slice(0, 3);
+          const categoryQues = subcategoryQuestions[subcategory].slice(0, 5);
           randomQues = [
             ...randomQues.slice(0, 10),
             ...generalQues,
