@@ -19,9 +19,11 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function Categories({navigation, route}) {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectCategory, setSelectedCategory] = useState('');
   const {fontScale} = useWindowDimensions();
 
@@ -34,6 +36,7 @@ export default function Categories({navigation, route}) {
       .get()
       .then(doc => {
         setCategories(doc.data().categories.filter(_cat => _cat.active));
+        setLoading(false);
       });
   }, []);
 
@@ -44,6 +47,24 @@ export default function Categories({navigation, route}) {
   //       : [...prev, _category],
   //   );
   // };
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          {alignItems: 'center', justifyContent: 'center'},
+        ]}
+        edges={['top']}>
+        <ImageBackground
+          source={require('../../assets/abstract.jpg')}
+          resizeMode="cover"
+          style={styles.backgroundImage}
+        />
+        <ActivityIndicator size={'large'} color={'#fff'} />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
@@ -167,7 +188,7 @@ const makeStyles = fontScale =>
       //   width: '50%',
       backgroundColor: '#efefef',
       paddingHorizontal: 20,
-      paddingVertical: Platform.OS === 'android' ? 9 : 20,
+      paddingVertical: Platform.OS === 'android' ? 17 : 20,
       color: '#ff552d',
       //   color: '#333',
       borderRadius: 20,

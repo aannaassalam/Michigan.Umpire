@@ -20,9 +20,11 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function SubCategories({navigation, route}) {
   const [tournaments, setTournaments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedTournament, setSelectedTournament] = useState('');
   const {fontScale} = useWindowDimensions();
 
@@ -37,6 +39,7 @@ export default function SubCategories({navigation, route}) {
       .get()
       .then(doc => {
         setTournaments(doc.data().tournaments.filter(_cat => _cat.active));
+        setLoading(false);
       });
   }, []);
 
@@ -48,6 +51,24 @@ export default function SubCategories({navigation, route}) {
   //   );
   // };
 
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={[
+          styles.container,
+          {alignItems: 'center', justifyContent: 'center'},
+        ]}
+        edges={['top']}>
+        <ImageBackground
+          source={require('../../assets/abstract.jpg')}
+          resizeMode="cover"
+          style={styles.backgroundImage}
+        />
+        <ActivityIndicator size={'large'} color={'#fff'} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <View style={{flex: 1}}>
       {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex: 1}}> */}
@@ -58,7 +79,8 @@ export default function SubCategories({navigation, route}) {
       />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{paddingTop: 140, paddingBottom: 50}}>
+        contentContainerStyle={{paddingTop: 140, paddingBottom: 50}}
+        showsVerticalScrollIndicator={false}>
         <View
           style={{
             position: 'absolute',

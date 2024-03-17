@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
   StatusBar,
+  Platform,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -65,7 +66,7 @@ export default function Start({navigation}) {
           source={require('../../assets/FCCUmpire-logo.jpeg')}
           style={styles.logo}
         />
-        <Text style={styles.name}>FCCUmpire</Text>
+        <Text style={styles.name}>Michigan Umpire</Text>
       </View>
       <Pressable
         onPress={() => {
@@ -118,6 +119,7 @@ const makeStyles = fontScale =>
       position: 'relative',
       justifyContent: 'flex-end',
       alignItems: 'center',
+      paddingBottom: Platform.OS === 'ios' ? 10 : 0,
     },
     backgroundImage: {
       height: Dimensions.get('window').height,

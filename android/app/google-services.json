@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:908252631576:android:5def5c615f49bbaedaa96d",
+        "mobilesdk_app_id": "1:908252631576:android:6dfefedba9e6b9efdaa96d",
         "android_client_info": {
-          "package_name": "com.fccumpire"
+          "package_name": "com.michiganumpire"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "908252631576-hjevvj0rv7vo95tjr0io05c0kq1an1fg.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "908252631576-5otlvaqp52p7a8ts9t3kq898q9catip0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.FCCUmpire"
+              }
             }
           ]
         }

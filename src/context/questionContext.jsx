@@ -76,18 +76,27 @@ export default function QuestionContext({children}) {
         if (category === 'General') {
           randomQues = [...randomQues.slice(0, 5), ...generalQues];
         } else if (category === 'FCC Umpiring Certification') {
-          const categoryQues = Object.entries(subcategoryQuestions).flatMap(
-            _subcat => {
-              return _subcat[1].slice(0, number_question_obj[_subcat[0]]);
-            },
-          );
+          const categoryQues = snap.docs
+            .filter(
+              _doc =>
+                _doc.data().activityStatus === 1 &&
+                _doc.data().status === 1 &&
+                _doc.data().category === category,
+            )
+            .sort(() => Math.random() - 0.5)
+            .map(doc => ({...doc.data(), id: doc.id}))
+            .slice(0, 25);
+
           randomQues = [
             ...randomQues.slice(0, 10),
             ...generalQues,
             ...categoryQues,
           ];
         } else if (category === 'Team Member Umpiring Certification') {
-          const categoryQues = subcategoryQuestions[subcategory].slice(0, 5);
+          const categoryQues = subcategoryQuestions[subcategory].slice(
+            0,
+            number_question_obj[subcategory],
+          );
           randomQues = [
             ...randomQues.slice(0, 10),
             ...generalQues,
@@ -107,10 +116,7 @@ export default function QuestionContext({children}) {
         }
 
         setPassingMarks(
-          Math.round(
-            settings.data().number_of_questions *
-              (settings.data().passing_marks / 100),
-          ),
+          Math.round(randomQues * (settings.data().passing_marks / 100)),
         );
 
         setQuestions(randomQues.sort(() => Math.random() - 0.5));

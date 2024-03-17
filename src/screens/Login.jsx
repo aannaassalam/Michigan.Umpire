@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
   TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {MMKV} from 'react-native-mmkv';
@@ -291,7 +292,7 @@ const makeStyles = fontScale =>
       backgroundColor: '#efefef',
       fontWeight: '500',
       paddingHorizontal: 20,
-      paddingVertical: 9,
+      paddingVertical: Platform.OS === 'ios' ? 15 : 9,
       color: '#333',
       borderRadius: 20,
     },

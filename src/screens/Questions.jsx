@@ -19,6 +19,7 @@ import {
   ScrollView,
   useWindowDimensions,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 // import {questions} from './data.json';
 import LinearGradient from 'react-native-linear-gradient';
@@ -103,6 +104,8 @@ export default function Questions({navigation, route}) {
                 date: new Date(),
                 score,
                 id: doc.data().attempts[doc.data().attempts.length - 1].id + 1,
+                category,
+                subcategory,
               },
             ];
             firestore()
@@ -138,6 +141,8 @@ export default function Questions({navigation, route}) {
                     date: new Date(),
                     score,
                     id: 1,
+                    category,
+                    subcategory,
                   },
                 ],
               })
@@ -153,6 +158,8 @@ export default function Questions({navigation, route}) {
                       date: new Date(),
                       score,
                       id: 1,
+                      category,
+                      subcategory,
                     },
                   ],
                 });
@@ -162,25 +169,25 @@ export default function Questions({navigation, route}) {
               })
               .catch(err => console.log(err));
           }
-          if (score >= passingMarks) {
-            try {
-              const res = await axios.post(
-                'https://fccumpire-server.herokuapp.com/certificate',
-                {
-                  name: `${user.first_name} ${user.last_name}`,
-                  email: user.email,
-                  category,
-                  subcategory,
-                },
-              );
-              // console.log(res);
-              if (res.status === 200) {
-                setSaving(false);
-              }
-            } catch (err) {
-              console.log(err);
+          // if (score >= passingMarks) {
+          try {
+            const res = await axios.post(
+              'https://fccumpire-server.herokuapp.com/certificate',
+              {
+                name: `${user.first_name} ${user.last_name}`,
+                email: user.email,
+                category,
+                subcategory,
+              },
+            );
+            // console.log(res);
+            if (res.status === 200) {
+              setSaving(false);
             }
+          } catch (err) {
+            console.log(err);
           }
+          // }
         })
         .catch(err => console.log(err));
     } else if (answer > -1) {
@@ -267,7 +274,8 @@ export default function Questions({navigation, route}) {
           paddingTop: 10,
           paddingBottom: 50,
           marginBottom: 15,
-        }}>
+        }}
+        showsVerticalScrollIndicator={false}>
         <Text style={styles.helperText}>Select the correct answer</Text>
         <View
           style={{
@@ -358,15 +366,16 @@ const makeStyles = fontScale =>
     counter: {
       color: '#eee',
       fontSize: 18 / fontScale,
-      marginTop: 15,
+      marginTop: Platform.OS === 'android' ? 15 : 0,
       fontWeight: '500',
     },
     question_container: {
       flex: 1.3,
-      padding: 15,
-      flexDirection: 'row',
+      paddingHorizontal: 15,
+      paddingVertical: 15,
+      // flexDirection: 'row',
       // justifyContent: 'center',
-      alignItems: 'center',
+      // alignItems: 'center',
     },
     options_container: {
       // position: 'relative',

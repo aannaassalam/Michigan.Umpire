@@ -107,10 +107,11 @@ function QuestionCards({question}) {
                 resizeMode: 'contain',
                 marginTop: 'auto',
                 display: 'flex',
+                transform: [{rotateY: '180deg'}],
                 // backgroundColor: 'red',
               }}
-              onError={() => console.log('issue')}
-              onProgress={() => console.log('progressing')}
+              // onError={() => console.log('issue')}
+              // onProgress={() => console.log('progressing')}
               onLoadEnd={() => {
                 setImageLoading(false);
               }}

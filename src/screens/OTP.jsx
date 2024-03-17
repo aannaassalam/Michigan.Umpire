@@ -357,7 +357,7 @@ const makeStyles = fontScale =>
       backgroundColor: '#efefef',
       fontWeight: '700',
       paddingHorizontal: 20,
-      paddingVertical: Platform.OS === 'android' ? 9 : 20,
+      paddingVertical: Platform.OS === 'android' ? 17 : 20,
       color: '#ff552d',
       //   color: '#333',
       borderRadius: 20,

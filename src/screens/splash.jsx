@@ -106,7 +106,7 @@ export default function Splash({isAppReady}) {
           backgroundColor: 'rgba(0,0,0,0.0)',
         }}></View>
       <Animated.Text style={[styles.name, {opacity: imageOpacity}]}>
-        FCCUmpire
+        Michigan Umpire
       </Animated.Text>
       {/* <Pressable
           style={{

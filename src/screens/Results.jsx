@@ -127,9 +127,14 @@ export default function Results({route, navigation}) {
           <Text style={{...styles.text}}>
             {authLoading
               ? ''
-              : user.attempts[user.attempts?.length - 1].result_state === 0
-              ? 'Better Luck next time...'
-              : 'Boom Boom Boom...'}
+              : `Test Score: ${
+                  user.attempts[user.attempts?.length - 1].score
+                }/${
+                  user.attempts[user.attempts?.length - 1].question_set.length
+                }`}
+            {/* user.attempts[user.attempts?.length - 1].result_state === 0
+            ? 'Better Luck next time...'
+              : 'Boom Boom Boom...' */}
           </Text>
         </View>
         <View
