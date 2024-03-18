@@ -116,7 +116,7 @@ export default function QuestionContext({children}) {
         }
 
         setPassingMarks(
-          Math.round(randomQues * (settings.data().passing_marks / 100)),
+          Math.round(randomQues.length * (settings.data().passing_marks / 100)),
         );
 
         setQuestions(randomQues.sort(() => Math.random() - 0.5));

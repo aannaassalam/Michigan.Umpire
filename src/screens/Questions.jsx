@@ -85,8 +85,24 @@ export default function Questions({navigation, route}) {
   //   outputRange: ['0%', '100%', '0%'],
   // });
 
+  console.log(score, passingMarks, 'test');
   const saveAnswer = useCallback(() => {
+    console.log(score, passingMarks);
     if (questionIndex === local_questions_copy.length - 1) {
+      let local_score = score;
+      const local_array = local_questions_copy;
+      local_array[questionIndex].answer = answer;
+      setLocal_questions_copy(local_array);
+      console.log(
+        answer,
+        local_questions_copy[questionIndex].correctOption,
+        'answer',
+      );
+      if (answer === local_questions_copy[questionIndex].correctOption) {
+        setScore(prev => prev + 1);
+        local_score += 1;
+      }
+
       setSaving(true);
       const user = JSON.parse(storage.getString('user'));
       firestore()
@@ -102,7 +118,7 @@ export default function Questions({navigation, route}) {
                 certificate_issued: score >= passingMarks,
                 result_state: score >= passingMarks ? 1 : 0,
                 date: new Date(),
-                score,
+                score: local_score,
                 id: doc.data().attempts[doc.data().attempts.length - 1].id + 1,
                 category,
                 subcategory,
@@ -139,7 +155,7 @@ export default function Questions({navigation, route}) {
                     certificate_issued: score >= passingMarks,
                     result_state: score >= passingMarks ? 1 : 0,
                     date: new Date(),
-                    score,
+                    score: local_score,
                     id: 1,
                     category,
                     subcategory,
@@ -156,7 +172,7 @@ export default function Questions({navigation, route}) {
                       certificate_issued: score >= passingMarks,
                       result_state: score >= passingMarks ? 1 : 0,
                       date: new Date(),
-                      score,
+                      score: local_score,
                       id: 1,
                       category,
                       subcategory,
