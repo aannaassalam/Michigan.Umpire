@@ -92,10 +92,10 @@ android {
             keyPassword 'android'
         }
         release {
-      storeFile file('fccumpire.keystore')
-      storePassword '123456'
-      keyAlias 'fccumpire'
-      keyPassword '123456'
+      storeFile file('michiganumpire.keystore')
+      storePassword 'michigan@123'
+      keyAlias 'michiganumpire'
+      keyPassword 'michigan@123'
     }
     }
     buildTypes {
