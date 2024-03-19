@@ -115,8 +115,8 @@ export default function Questions({navigation, route}) {
               ...doc.data().attempts,
               {
                 question_set: local_questions_copy,
-                certificate_issued: score >= passingMarks,
-                result_state: score >= passingMarks ? 1 : 0,
+                certificate_issued: local_score >= passingMarks,
+                result_state: local_score >= passingMarks ? 1 : 0,
                 date: new Date(),
                 score: local_score,
                 id: doc.data().attempts[doc.data().attempts.length - 1].id + 1,
@@ -152,8 +152,8 @@ export default function Questions({navigation, route}) {
                 attempts: [
                   {
                     question_set: local_questions_copy,
-                    certificate_issued: score >= passingMarks,
-                    result_state: score >= passingMarks ? 1 : 0,
+                    certificate_issued: local_score >= passingMarks,
+                    result_state: local_score >= passingMarks ? 1 : 0,
                     date: new Date(),
                     score: local_score,
                     id: 1,
@@ -169,8 +169,8 @@ export default function Questions({navigation, route}) {
                   attempts: [
                     {
                       question_set: local_questions_copy,
-                      certificate_issued: score >= passingMarks,
-                      result_state: score >= passingMarks ? 1 : 0,
+                      certificate_issued: local_score >= passingMarks,
+                      result_state: local_score >= passingMarks ? 1 : 0,
                       date: new Date(),
                       score: local_score,
                       id: 1,

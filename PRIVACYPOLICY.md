@@ -1,6 +1,6 @@
-## FCCUmpire: Privacy policy
+## Michigan Umpire: Privacy policy
 
-Welcome to the FCCUmpire app for Android!
+Welcome to the Michigan Umpire app for Android!
 
 This is an Android app developed by Anas Alam. The source code is available on GitHub under the MIT license; the app is also available on Google Play.
 
@@ -15,11 +15,11 @@ The list of information required by the app to continue using the app is listed 
 
 <br/>
 
-| Information | Why it is required |
-| :---: | --- |
-| First Name | This is required to generate a certifcate unique to the user where his first name will be mentioned. |
-| Last Name | This is required to generate a certifcate unique to the user where his last name will be mentioned. |
-| Email Address | This is required to check and allow access to user previous data and also to send them their generated certificate over to the mail. |
+|  Information  | Why it is required                                                                                                                                                                                                                                                                                                                                           |
+| :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|  First Name   | This is required to generate a certifcate unique to the user where his first name will be mentioned.                                                                                                                                                                                                                                                         |
+|   Last Name   | This is required to generate a certifcate unique to the user where his last name will be mentioned.                                                                                                                                                                                                                                                          |
+| Email Address | This is required to check and allow access to user previous data and also to send them their generated certificate over to the mail. Also to minimize the risk of spam test being performed in the application we will be sending an OTP to your email just to verify that you are a genuine user trying to access the application with an authorized email. |
 
  <hr style="border:1px solid gray">
 

@@ -200,12 +200,7 @@ function QuestionCards({question}) {
                 question.brief.slice(1, question.brief.length).toLowerCase()}
             </Text>
           )}
-          <Text style={styles.question_text}>
-            {question.question.slice(0, 1).toUpperCase() +
-              question.question
-                .slice(1, question.question.length)
-                .toLowerCase()}
-          </Text>
+          <Text style={styles.question_text}>{question.question}</Text>
           {question.image && (
             <TouchableOpacity
               style={{
